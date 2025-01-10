@@ -1,268 +1,259 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maloshavote - Voting System</title>
+    <title>Malosha - Voting System</title>
     <style>
-        /* Basic CSS styling for layout */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .container {
-            max-width: 700px;
-            margin: 20px auto;
-            background: white;
+            background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
         }
 
-        h1, h2 {
-            text-align: center;
+        h1 {
             color: #333;
         }
 
-        fieldset {
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
+        .vote-option {
+            margin: 10px 0;
         }
 
-        legend {
-            font-weight: bold;
-            color: #555;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        input[type="radio"] {
+            margin-right: 10px;
         }
 
         button {
             background-color: #007bff;
             color: white;
+            padding: 10px 20px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        #liveResults, #voteResponse {
-            background: #e9e9e9;
+        #results {
+            margin-top: 20px;
+            display: none;
+            background-color: #f9f9f9;
             padding: 10px;
             border-radius: 5px;
-            font-size: 16px;
-            margin-top: 20px;
         }
 
-        #voteResponse {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .divider {
-            height: 2px;
-            background-color: #ccc;
-            margin: 30px 0;
+        .result {
+            margin: 5px 0;
         }
 
         #adminSection {
-            display: none;
             margin-top: 20px;
+            display: none;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         .admin-btn {
             margin-top: 10px;
             background-color: #28a745;
+            width: 100%;
         }
 
-        select {
-            padding: 8px;
+        #adminButton {
+            background-color: #28a745;
+        }
+
+        .ellipsis {
+            font-size: 24px;
+            cursor: pointer;
             margin-top: 10px;
+        }
+
+        .settings-menu {
+            display: none;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .settings-menu button {
+            width: 100%;
+            background-color: #ff5722;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Maloshavote - Voting System</h1>
+        <h1>Malosha - Voting System</h1>
+        <div id="pollQuestionDiv">
+            <h2 id="pollQuestion">Je, Kwa sasa upo hatika hatua ngani ya maisha?</h2>
+        </div>
+        <div class="vote-option">
+            <input type="radio" id="optionA" name="vote" value="A. Mke">
+            <label for="optionA" id="optionALabel">A. Mke</label>
+        </div>
+        <div class="vote-option">
+            <input type="radio" id="optionB" name="vote" value="B. Mume">
+            <label for="optionB" id="optionBLabel">B. Mume</label>
+        </div>
+        <div class="vote-option">
+            <input type="radio" id="optionC" name="vote" value="C. Una moto">
+            <label for="optionC" id="optionCLabel">C. Una moto</label>
+        </div>
+        <div class="vote-option">
+            <input type="radio" id="optionD" name="vote" value="D. Upo upo tu">
+            <label for="optionD" id="optionDLabel">D. Upo upo tu</label>
+        </div>
+        <button onclick="submitVote()">Submit Vote</button>
 
-        <!-- Voting Form -->
-        <form id="pollForm">
-            <h2 id="pollQuestion">Choose Your Option</h2>
-            <fieldset>
-                <legend>Choose Your Vote</legend>
-                <label>
-                    <input type="radio" name="voteOption" value="A"> Option A
-                </label>
-                <label>
-                    <input type="radio" name="voteOption" value="B"> Option B
-                </label>
-                <button type="button" onclick="submitVote()">Vote</button>
-            </fieldset>
-        </form>
-
-        <!-- Vote Response Section -->
-        <div id="voteResponse" style="display: none;"></div>
-
-        <!-- Live Results Section -->
-        <div id="liveResults" style="display: none;">
-            <h2>Live Results</h2>
-            <p>Total Votes: <span id="totalVotes">0</span></p>
-            <p>Option A: <span id="optionAVotes">0</span> (0%)</p>
-            <p>Option B: <span id="optionBVotes">0</span> (0%)</p>
+        <div id="results">
+            <h2>Results</h2>
+            <div class="result" id="resultA">A. Mke: 0 votes</div>
+            <div class="result" id="resultB">B. Mume: 0 votes</div>
+            <div class="result" id="resultC">C. Una moto: 0 votes</div>
+            <div class="result" id="resultD">D. Upo upo tu: 0 votes</div>
         </div>
 
-        <!-- Admin Section -->
         <div id="adminSection">
-            <h2>Admin - Edit Question & Options</h2>
+            <h2>Admin - Edit Poll Question</h2>
             <label for="newQuestion">New Question:</label>
             <input type="text" id="newQuestion" placeholder="Enter new question" />
-            
-            <h3>Edit Options</h3>
-            <label for="optionA">Option A:</label>
-            <input type="text" id="optionA" placeholder="Enter Option A" />
+            <label for="newOptionA">New Option A:</label>
+            <input type="text" id="newOptionA" placeholder="Enter new Option A" />
+            <label for="newOptionB">New Option B:</label>
+            <input type="text" id="newOptionB" placeholder="Enter new Option B" />
+            <label for="newOptionC">New Option C:</label>
+            <input type="text" id="newOptionC" placeholder="Enter new Option C" />
+            <label for="newOptionD">New Option D:</label>
+            <input type="text" id="newOptionD" placeholder="Enter new Option D" />
+            <button class="admin-btn" onclick="updatePoll()">Save Changes</button>
 
-            <label for="optionB">Option B:</label>
-            <input type="text" id="optionB" placeholder="Enter Option B" />
-            
-            <h3>Choose Result Announcement Time</h3>
-            <label for="resultVisibility">When should the results be shown?</label>
-            <select id="resultVisibility" onchange="setResultVisibility()">
-                <option value="public_after_vote">Public After Vote</option>
-                <option value="public_after_duration">Public After Voting Time Ends</option>
-                <option value="only_to_admin">Only to Admin</option>
-                <option value="public">Public Immediately</option>
-            </select>
-
-            <button type="button" class="admin-btn" onclick="updatePoll()">Save Question & Options</button>
+            <div class="ellipsis" onclick="toggleSettingsMenu()">&#8230; Settings</div>
+            <div class="settings-menu" id="settingsMenu">
+                <button onclick="clearVotes()">Clear All Votes</button>
+                <button onclick="resetPoll()">Reset Poll</button>
+            </div>
         </div>
 
-        <!-- Admin Login Button -->
-        <button type="button" onclick="loginAdmin()">Login as Admin</button>
+        <button id="adminButton" onclick="loginAdmin()">Malosha Use Only (Admin)</button>
     </div>
 
     <script>
-        let totalVotes = 0, optionAVotes = 0, optionBVotes = 0;
+        let votes = { 'A. Mke': 0, 'B. Mume': 0, 'C. Una moto': 0, 'D. Upo upo tu': 0 };
         let hasVoted = false;
         let isAdmin = false;
-        let votingEndTime = null;
-        let resultVisibility = 'public_after_vote'; // Options: public, public_after_vote, only_to_admin, public_after_duration
-        let votingDuration = 10; // Duration in seconds (for demo purposes)
-
-        // Set voting end time after duration
-        function setVotingEndTime() {
-            votingEndTime = new Date(new Date().getTime() + votingDuration * 1000);
-        }
 
         // Submit Vote
         function submitVote() {
-            const voteOption = document.querySelector('input[name="voteOption"]:checked');
-            const voteResponseDiv = document.getElementById('voteResponse');
+            const selectedOption = document.querySelector('input[name="vote"]:checked');
+            if (!selectedOption) {
+                alert('Please select an option before submitting.');
+                return;
+            }
 
             if (hasVoted) {
-                voteResponseDiv.style.display = 'block';
-                voteResponseDiv.innerText = "You have already voted!";
+                alert("You can only vote once.");
                 return;
             }
 
-            if (!voteOption) {
-                voteResponseDiv.style.display = 'block';
-                voteResponseDiv.innerText = "Please choose an option before voting!";
-                return;
-            }
-
-            const vote = voteOption.value;
-            totalVotes++;
-            if (vote === "A") optionAVotes++;
-            else if (vote === "B") optionBVotes++;
-
+            const option = selectedOption.value;
+            votes[option]++;
             hasVoted = true;
 
-            updateResults();
+            // Update the result display
+            document.getElementById('resultA').innerText = `A. Mke: ${votes['A. Mke']} votes`;
+            document.getElementById('resultB').innerText = `B. Mume: ${votes['B. Mume']} votes`;
+            document.getElementById('resultC').innerText = `C. Una moto: ${votes['C. Una moto']} votes`;
+            document.getElementById('resultD').innerText = `D. Upo upo tu: ${votes['D. Upo upo tu']} votes`;
 
-            voteResponseDiv.style.display = 'block';
-            voteResponseDiv.innerText = "Thank you for your vote!";
-
-            // Reset the selected option
-            document.querySelector('input[name="voteOption"]:checked').checked = false;
+            // Show the results section
+            document.getElementById('results').style.display = 'block';
         }
 
-        // Update Results
-        function updateResults() {
-            const percentA = ((optionAVotes / totalVotes) * 100).toFixed(1) || 0;
-            const percentB = ((optionBVotes / totalVotes) * 100).toFixed(1) || 0;
-
-            document.getElementById('totalVotes').innerText = totalVotes;
-            document.getElementById('optionAVotes').innerText = `${optionAVotes} (${percentA}%)`;
-            document.getElementById('optionBVotes').innerText = `${optionBVotes} (${percentB}%)`;
-
-            if (resultVisibility === 'public' || resultVisibility === 'public_after_vote') {
-                document.getElementById('liveResults').style.display = 'block';
-            }
-        }
-
-        // Admin Login
+        // Show Admin Section (Login as Admin)
         function loginAdmin() {
             const password = prompt("Enter Admin Password:");
             if (password === "00361") {
                 isAdmin = true;
                 document.getElementById('adminSection').style.display = 'block';
-                setVotingEndTime();
+                document.getElementById('adminButton').style.display = 'none'; // Hide the Admin button after login
                 alert("Logged in as Admin!");
             } else {
                 alert("Incorrect password.");
             }
         }
 
-        // Admin Update Poll Question & Options
+        // Update Poll Question & Options
         function updatePoll() {
             const newQuestion = document.getElementById('newQuestion').value;
-            const newOptionA = document.getElementById('optionA').value;
-            const newOptionB = document.getElementById('optionB').value;
+            const newOptionA = document.getElementById('newOptionA').value;
+            const newOptionB = document.getElementById('newOptionB').value;
+            const newOptionC = document.getElementById('newOptionC').value;
+            const newOptionD = document.getElementById('newOptionD').value;
 
-            if (newQuestion && newOptionA && newOptionB) {
+            if (newQuestion && newOptionA && newOptionB && newOptionC && newOptionD) {
                 document.getElementById('pollQuestion').innerText = newQuestion;
-                document.querySelector('input[value="A"]').parentElement.innerHTML = `<input type="radio" name="voteOption" value="A"> ${newOptionA}`;
-                document.querySelector('input[value="B"]').parentElement.innerHTML = `<input type="radio" name="voteOption" value="B"> ${newOptionB}`;
-                alert("Question and options updated!");
+                document.getElementById('optionALabel').innerText = newOptionA;
+                document.getElementById('optionBLabel').innerText = newOptionB;
+                document.getElementById('optionCLabel').innerText = newOptionC;
+                document.getElementById('optionDLabel').innerText = newOptionD;
+                alert("Poll question and options updated!");
             } else {
-                alert("Please fill out the question and both options.");
+                alert("Please fill out all fields.");
             }
         }
 
-        // Set Result Visibility Option
-        function setResultVisibility() {
-            resultVisibility = document.getElementById('resultVisibility').value;
+        // Toggle Settings Menu// Toggle Settings Menu (Ellipsis)
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settingsMenu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
-        // Check Voting Time and show results accordingly
-        function checkVotingTime() {
-            if (votingEndTime && new Date() > votingEndTime) {
-                if (resultVisibility === 'public_after_duration') {
-                    document.getElementById('liveResults').style.display = 'block';
-                }
-            }
+        // Clear all votes
+        function clearVotes() {
+            votes = { 'A. Mke': 0, 'B. Mume': 0, 'C. Una moto': 0, 'D. Upo upo tu': 0 };
+            document.getElementById('resultA').innerText = `A. Mke: 0 votes`;
+            document.getElementById('resultB').innerText = `B. Mume: 0 votes`;
+            document.getElementById('resultC').innerText = `C. Una moto: 0 votes`;
+            document.getElementById('resultD').innerText = `D. Upo upo tu: 0 votes`;
+            alert('All votes have been cleared.');
         }
 
-        // Interval to check voting time
-        setInterval(checkVotingTime, 1000);
+        // Reset poll (back to original state)
+        function resetPoll() {
+            document.getElementById('newQuestion').value = '';
+            document.getElementById('newOptionA').value = '';
+            document.getElementById('newOptionB').value = '';
+            document.getElementById('newOptionC').value = '';
+            document.getElementById('newOptionD').value = '';
+            alert('Poll and votes have been reset.');
+        }
     </script>
 </body>
+</html>
