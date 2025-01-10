@@ -112,7 +112,7 @@
     <div class="container">
         <h1>Malosha - Voting System</h1>
         <div id="pollQuestionDiv">
-            <h2 id="pollQuestion">Je, Kwa sasa upo hatika hatua ngani ya maisha?</h2>
+            <h2 id="pollQuestion">What stage of life are you in?</h2>
         </div>
         <div class="vote-option">
             <input type="radio" id="optionA" name="vote" value="A. Mke">
@@ -141,23 +141,24 @@
         </div>
 
         <div id="adminSection">
-            <h2>Admin - Edit Poll Question</h2>
+            <h2>Admin - Edit Poll</h2>
             <label for="newQuestion">New Question:</label>
             <input type="text" id="newQuestion" placeholder="Enter new question" />
             <label for="newOptionA">New Option A:</label>
-            <input type="text" id="newOptionA" placeholder="Enter new Option A" />
+            <input type="text" id="newOptionA" placeholder="Enter Option A" />
             <label for="newOptionB">New Option B:</label>
-            <input type="text" id="newOptionB" placeholder="Enter new Option B" />
+            <input type="text" id="newOptionB" placeholder="Enter Option B" />
             <label for="newOptionC">New Option C:</label>
-            <input type="text" id="newOptionC" placeholder="Enter new Option C" />
+            <input type="text" id="newOptionC" placeholder="Enter Option C" />
             <label for="newOptionD">New Option D:</label>
-            <input type="text" id="newOptionD" placeholder="Enter new Option D" />
+            <input type="text" id="newOptionD" placeholder="Enter Option D" />
             <button class="admin-btn" onclick="updatePoll()">Save Changes</button>
 
             <div class="ellipsis" onclick="toggleSettingsMenu()">&#8230; Settings</div>
             <div class="settings-menu" id="settingsMenu">
                 <button onclick="clearVotes()">Clear All Votes</button>
                 <button onclick="resetPoll()">Reset Poll</button>
+                <button onclick="viewResults()">View Results</button>
             </div>
         </div>
 
@@ -166,19 +167,19 @@
 
     <script>
         let votes = { 'A. Mke': 0, 'B. Mume': 0, 'C. Una moto': 0, 'D. Upo upo tu': 0 };
-        let hasVoted = false;
         let isAdmin = false;
+        let hasVoted = false; // Ensures that a user can vote only once
 
         // Submit Vote
         function submitVote() {
-            const selectedOption = document.querySelector('input[name="vote"]:checked');
-            if (!selectedOption) {
-                alert('Please select an option before submitting.');
+            if (hasVoted) {
+                alert('You have already voted.');
                 return;
             }
 
-            if (hasVoted) {
-                alert("You can only vote once.");
+            const selectedOption = document.querySelector('input[name="vote"]:checked');
+            if (!selectedOption) {
+                alert('Please choose an option before submitting.');
                 return;
             }
 
@@ -203,7 +204,7 @@
                 isAdmin = true;
                 document.getElementById('adminSection').style.display = 'block';
                 document.getElementById('adminButton').style.display = 'none'; // Hide the Admin button after login
-                alert("Logged in as Admin!");
+                alert("You are logged in as Admin!");
             } else {
                 alert("Incorrect password.");
             }
@@ -223,36 +224,36 @@
                 document.getElementById('optionBLabel').innerText = newOptionB;
                 document.getElementById('optionCLabel').innerText = newOptionC;
                 document.getElementById('optionDLabel').innerText = newOptionD;
-                alert("Poll question and options updated!");
+                alert("Question and options updated!");
             } else {
-                alert("Please fill out all fields.");
+                alert("Please fill in all fields.");
             }
         }
 
-        // Toggle Settings Menu// Toggle Settings Menu (Ellipsis)
+        // Toggle Settings Menu
         function toggleSettingsMenu() {
             const menu = document.getElementById('settingsMenu');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
         }
 
-        // Clear all votes
+        // Clear All Votes
         function clearVotes() {
             votes = { 'A. Mke': 0, 'B. Mume': 0, 'C. Una moto': 0, 'D. Upo upo tu': 0 };
             document.getElementById('resultA').innerText = `A. Mke: 0 votes`;
             document.getElementById('resultB').innerText = `B. Mume: 0 votes`;
             document.getElementById('resultC').innerText = `C. Una moto: 0 votes`;
             document.getElementById('resultD').innerText = `D. Upo upo tu: 0 votes`;
-            alert('All votes have been cleared.');
+            alert("All votes have been cleared.");
         }
 
-        // Reset poll (back to original state)
+        // Reset Poll
         function resetPoll() {
-            document.getElementById('newQuestion').value = '';
-            document.getElementById('newOptionA').value = '';
-            document.getElementById('newOptionB').value = '';
-            document.getElementById('newOptionC').value = '';
-            document.getElementById('newOptionD').value = '';
-            alert('Poll and votes have been reset.');
+            document.getElementById('pollQuestion').innerText = "What stage of life are you in?";
+            document.getElementById('optionALabel').innerText = "A. Mke";
+            document.getElementById('optionBLabel').innerText = "B. Mume";
+            document.getElementById('optionCLabel').innerText = "C. Una moto";
+            document.getElementById('optionDLabel').innerText = "D. Upo upo tu";
+            alert("Poll has been reset.");
         }
     </script>
 </body>
