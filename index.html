@@ -1,19 +1,42 @@
+Ukague huu mfumo uniambie Hadi hapa  una ubora gani
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malosha - Voting System</title>
+    <title>Malosha Polling System</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAEwWF8dqELCbOYbpzij043u4Mw074FMmA",
+            authDomain: "lastg7-af603.firebaseapp.com",
+            projectId: "lastg7-af603",
+            storageBucket: "lastg7-af603.firebasestorage.app",
+            messagingSenderId: "629862528860",
+            appId: "1:629862528860:web:5ddf0a222c7a5a1bd5f399"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+    </script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #007bff;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            flex-direction: column;
         }
 
         .container {
@@ -21,7 +44,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 400px;
             text-align: center;
         }
 
@@ -29,16 +52,31 @@
             color: #333;
         }
 
-        .vote-option {
-            margin: 10px 0;
+        h2 {
+            color: #0056b3;
         }
 
-        input[type="radio"] {
+        .vote-option {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .vote-option:hover {
+            background-color: #e6f7ff;
+        }
+
+        .vote-option input[type="radio"] {
             margin-right: 10px;
+            accent-color: #0056b3;
         }
 
         button {
-            background-color: #007bff;
+            background-color: #0056b3;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -49,137 +87,110 @@
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #003f7f;
         }
 
         #results {
             margin-top: 20px;
             display: none;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
         }
 
-        .result {
-            margin: 5px 0;
-        }
-
-        #adminSection {
+        canvas {
             margin-top: 20px;
+        }
+
+        .admin-section {
             display: none;
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .admin-btn {
-            margin-top: 10px;
-            background-color: #28a745;
-            width: 100%;
-        }
-
-        #adminButton {
-            background-color: #28a745;
-        }
-
-        .ellipsis {
-            font-size: 24px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .settings-menu {
+        .reply-section {
             display: none;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            padding: 10px;
-            margin-top: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .settings-menu button {
-            width: 100%;
-            background-color: #ff5722;
+            margin-top: 20px;
         }
     </style>
+
 </head>
 <body>
+
     <div class="container">
-        <h1>Malosha - Voting System</h1>
-        <div id="pollQuestionDiv">
-            <h2 id="pollQuestion">What stage of life are you in?</h2>
+        <h1>Malosha Polling System</h1>
+        <h2>What stage of life are you in?</h2>
+        <div class="vote-option">
+            <input type="radio" id="optionA" name="vote" value="A. Married Woman">
+            <label for="optionA">A. Married Woman (Mke)</label>
         </div>
         <div class="vote-option">
-            <input type="radio" id="optionA" name="vote" value="A. Mke">
-            <label for="optionA" id="optionALabel">A. Mke</label>
+            <input type="radio" id="optionB" name="vote" value="B. Married Man">
+            <label for="optionB">B. Married Man (Mume)</label>
         </div>
         <div class="vote-option">
-            <input type="radio" id="optionB" name="vote" value="B. Mume">
-            <label for="optionB" id="optionBLabel">B. Mume</label>
+            <input type="radio" id="optionC" name="vote" value="C. In a Relationship">
+            <label for="optionC">C. In a Relationship (Una Moto)</label>
         </div>
         <div class="vote-option">
-            <input type="radio" id="optionC" name="vote" value="C. Una moto">
-            <label for="optionC" id="optionCLabel">C. Una moto</label>
-        </div>
-        <div class="vote-option">
-            <input type="radio" id="optionD" name="vote" value="D. Upo upo tu">
-            <label for="optionD" id="optionDLabel">D. Upo upo tu</label>
+            <input type="radio" id="optionD" name="vote" value="D. Single">
+            <label for="optionD">D. Single (Upo Upo Tu)</label>
         </div>
         <button onclick="submitVote()">Submit Vote</button>
 
         <div id="results">
             <h2>Results</h2>
-            <div class="result" id="resultA">A. Mke: 0 votes</div>
-            <div class="result" id="resultB">B. Mume: 0 votes</div>
-            <div class="result" id="resultC">C. Una moto: 0 votes</div>
-            <div class="result" id="resultD">D. Upo upo tu: 0 votes</div>
+            <canvas id="voteChart"></canvas>
         </div>
-
-        <div id="adminSection">
-            <h2>Admin - Edit Poll</h2>
-            <label for="newQuestion">New Question:</label>
-            <input type="text" id="newQuestion" placeholder="Enter new question" />
-            <label for="newOptionA">New Option A:</label>
-            <input type="text" id="newOptionA" placeholder="Enter Option A" />
-            <label for="newOptionB">New Option B:</label>
-            <input type="text" id="newOptionB" placeholder="Enter Option B" />
-            <label for="newOptionC">New Option C:</label>
-            <input type="text" id="newOptionC" placeholder="Enter Option C" />
-            <label for="newOptionD">New Option D:</label>
-            <input type="text" id="newOptionD" placeholder="Enter Option D" />
-            <button class="admin-btn" onclick="updatePoll()">Save Changes</button>
-
-            <div class="ellipsis" onclick="toggleSettingsMenu()">&#8230; Settings</div>
-            <div class="settings-menu" id="settingsMenu">
-                <button onclick="clearVotes()">Clear All Votes</button>
-                <button onclick="resetPoll()">Reset Poll</button>
-                <button onclick="viewResults()">View Results</button>
-            </div>
-        </div>
-
-        <button id="adminButton" onclick="loginAdmin()">Malosha Use Only (Admin)</button>
     </div>
 
-    <script>
-        let votes = { 'A. Mke': 0, 'B. Mume': 0, 'C. Una moto': 0, 'D. Upo upo tu': 0 };
-        let isAdmin = false;
-        let hasVoted = false; // Ensures that a user can vote only once
+    <button class="share-button" onclick="sharePoll()">Share Poll</button>
+    <button class="share-button" onclick="showAdminSection()">Admin Login</button>
 
-        // Submit Vote
+    <div class="admin-section" id="adminSection">
+        <h2>Admin Section</h2>
+        <label for="adminPassword">Enter Admin Password:</label>
+        <input type="text" id="adminPassword" placeholder="Enter password" />
+        <button onclick="validateAdmin()">Login</button>
+        <div id="detailedResults" style="display: none;">
+            <h3>Detailed Results:</h3>
+            <p id="resultA"></p>
+            <p id="resultB"></p>
+            <p id="resultC"></p>
+            <p id="resultD"></p>
+        </div>
+    </div>
+
+    <div id="smsCommentSection">
+        <h2>Leave your comment via SMS:</h2>
+        <textarea id="smsComment" rows="4" placeholder="Enter your comment here..."></textarea>
+        <button class="reply-button" onclick="submitComment()">Submit Comment</button>
+    </div>
+
+    <div id="notification">You have a new comment!</div>
+
+    <div class="reply-section" id="replySection">
+        <h2>Reply to Comment:</h2>
+        <textarea id="smsReply" class="reply-textarea" rows="4" placeholder="Type your reply here..."></textarea>
+        <button class="reply-button" onclick="submitReply()">Send Reply</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        let votes = { 'A. Married Woman': 0, 'B. Married Man': 0, 'C. In a Relationship': 0, 'D. Single': 0 };
+        let hasVoted = false;
+
         function submitVote() {
             if (hasVoted) {
-                alert('You have already voted.');
+                alert("You can only vote once.");
                 return;
             }
 
             const selectedOption = document.querySelector('input[name="vote"]:checked');
             if (!selectedOption) {
-                alert('Please choose an option before submitting.');
+                alert("Please select an option before voting.");
                 return;
             }
 
@@ -187,74 +198,101 @@
             votes[option]++;
             hasVoted = true;
 
-            // Update the result display
-            document.getElementById('resultA').innerText = `A. Mke: ${votes['A. Mke']} votes`;
-            document.getElementById('resultB').innerText = `B. Mume: ${votes['B. Mume']} votes`;
-            document.getElementById('resultC').innerText = `C. Una moto: ${votes['C. Una moto']} votes`;
-            document.getElementById('resultD').innerText = `D. Upo upo tu: ${votes['D. Upo upo tu']} votes`;
+            // Update Firebase database with the new vote counts
+            const votesRef = database.ref('votes');
+            votesRef.set(votes);
 
-            // Show the results section
+            const ctx = document.getElementById('voteChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(votes),
+                    datasets: [{
+                        label: 'Votes',
+                        data: Object.values(votes),
+                        backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
             document.getElementById('results').style.display = 'block';
         }
 
-        // Show Admin Section (Login as Admin)
-        function loginAdmin() {
-            const password = prompt("Enter Admin Password:");
-            if (password === "00361") {
-                isAdmin = true;
-                document.getElementById('adminSection').style.display = 'block';
-                document.getElementById('adminButton').style.display = 'none'; // Hide the Admin button after login
-                alert("You are logged in as Admin!");
+        function sharePoll() {
+            const pollUrl = "https://malosha12.github.io/Malosha-polling-/";
+            navigator.clipboard.writeText(pollUrl).then(() => {
+                alert("Poll link copied to clipboard! Share it with others.");
+            }).catch(() => {
+                alert("Failed to copy link.");
+            });
+        }
+
+        function showAdminSection() {
+            document.getElementById("adminSection").style.display = "block";
+        }
+
+        function validateAdmin() {
+            const password = document.getElementById("adminPassword").value;
+            if (password === "1340") {
+                document.getElementById("detailedResults").style.display = "block";
+                document.getElementById("resultA").textContent = `A. Married Woman: ${votes['A. Married Woman']} votes`;
+                document.getElementById("resultB").textContent = `B. Married Man: ${votes['B. Married Man']} votes`;
+                document.getElementById("resultC").textContent = `C. In a Relationship: ${votes['C. In a Relationship']} votes`;
+                document.getElementById("resultD").textContent = `D. Single: ${votes['D. Single']} votes`;
             } else {
-                alert("Incorrect password.");
+                alert("Incorrect password!");
             }
         }
 
-        // Update Poll Question & Options
-        function updatePoll() {
-            const newQuestion = document.getElementById('newQuestion').value;
-            const newOptionA = document.getElementById('newOptionA').value;
-            const newOptionB = document.getElementById('newOptionB').value;
-            const newOptionC = document.getElementById('newOptionC').value;
-            const newOptionD = document.getElementById('newOptionD').value;
-
-            if (newQuestion && newOptionA && newOptionB && newOptionC && newOptionD) {
-                document.getElementById('pollQuestion').innerText = newQuestion;
-                document.getElementById('optionALabel').innerText = newOptionA;
-                document.getElementById('optionBLabel').innerText = newOptionB;
-                document.getElementById('optionCLabel').innerText = newOptionC;
-                document.getElementById('optionDLabel').innerText = newOptionD;
-                alert("Question and options updated!");
-            } else {
-                alert("Please fill in all fields.");
+        // Functions forcomments and replies
+        function submitComment() {
+            const comment = document.getElementById("smsComment").value;
+            if (comment.trim() === "") {
+                alert("Please enter a comment before submitting.");
+                return;
             }
+
+            // Save the comment to Firebase
+            const commentsRef = database.ref('comments').push();
+            commentsRef.set({ comment });
+
+            alert("Comment submitted successfully!");
+            document.getElementById("smsComment").value = ""; // Clear the textarea
         }
 
-        // Toggle Settings Menu
-        function toggleSettingsMenu() {
-            const menu = document.getElementById('settingsMenu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        function submitReply() {
+            const reply = document.getElementById("smsReply").value;
+            if (reply.trim() === "") {
+                alert("Please enter a reply before submitting.");
+                return;
+            }
+
+            // Save the reply to Firebase
+            const repliesRef = database.ref('replies').push();
+            repliesRef.set({ reply });
+
+            alert("Reply submitted successfully!");
+            document.getElementById("smsReply").value = ""; // Clear the textarea
         }
 
-        // Clear All Votes
-        function clearVotes() {
-            votes = { 'A. Mke': 0, 'B. Mume': 0, 'C. Una moto': 0, 'D. Upo upo tu': 0 };
-            document.getElementById('resultA').innerText = `A. Mke: 0 votes`;
-            document.getElementById('resultB').innerText = `B. Mume: 0 votes`;
-            document.getElementById('resultC').innerText = `C. Una moto: 0 votes`;
-            document.getElementById('resultD').innerText = `D. Upo upo tu: 0 votes`;
-            alert("All votes have been cleared.");
-        }
+        // Firebase listener for new comments (optional: notify admin or update UI)
+        const commentsRef = database.ref('comments');
+        commentsRef.on('child_added', (snapshot) => {
+            const newComment = snapshot.val();
+            document.getElementById("notification").style.display = "block";
+            document.getElementById("notification").textContent = `New comment: ${newComment.comment}`;
+        });
 
-        // Reset Poll
-        function resetPoll() {
-            document.getElementById('pollQuestion').innerText = "What stage of life are you in?";
-            document.getElementById('optionALabel').innerText = "A. Mke";
-            document.getElementById('optionBLabel').innerText = "B. Mume";
-            document.getElementById('optionCLabel').innerText = "C. Una moto";
-            document.getElementById('optionDLabel').innerText = "D. Upo upo tu";
-            alert("Poll has been reset.");
-        }
+        // Close notification on click
+        document.getElementById("notification").addEventListener("click", () => {
+            document.getElementById("notification").style.display = "none";
+        });
     </script>
 </body>
 </html>
