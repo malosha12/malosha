@@ -1,298 +1,269 @@
-Ukague huu mfumo uniambie Hadi hapa  una ubora gani
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malosha Polling System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #e5ddd5;
+      color: #000;
+    }
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    .dark-mode {
+      background-color: #121212;
+      color: #ffffff;
+    }
 
-    <!-- Firebase Configuration -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAEwWF8dqELCbOYbpzij043u4Mw074FMmA",
-            authDomain: "lastg7-af603.firebaseapp.com",
-            projectId: "lastg7-af603",
-            storageBucket: "lastg7-af603.firebasestorage.app",
-            messagingSenderId: "629862528860",
-            appId: "1:629862528860:web:5ddf0a222c7a5a1bd5f399"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-    </script>
+    .chat-container {
+      max-width: 400px;
+      margin: 50px auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      overflow: hidden;
+    }
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #007bff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
+    .dark-mode .chat-container {
+      background-color: #1f1f1f;
+    }
 
-        .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            text-align: center;
-        }
+    .chat-header {
+      background-color: #075e54;
+      color: #ffffff;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 18px;
+      position: relative;
+    }
 
-        h1 {
-            color: #333;
-        }
+    .settings-menu {
+      position: absolute;
+      top: 50px;
+      right: 10px;
+      background-color: #ffffff;
+      color: #000;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 10;
+    }
 
-        h2 {
-            color: #0056b3;
-        }
+    .dark-mode .settings-menu {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #444;
+    }
 
-        .vote-option {
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    .settings-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-        .vote-option:hover {
-            background-color: #e6f7ff;
-        }
+    .settings-menu ul li {
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-        .vote-option input[type="radio"] {
-            margin-right: 10px;
-            accent-color: #0056b3;
-        }
+    .settings-menu ul li:hover {
+      background-color: #f0f0f0;
+    }
 
-        button {
-            background-color: #0056b3;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
+    .dark-mode .settings-menu ul li:hover {
+      background-color: #444;
+    }
 
-        button:hover {
-            background-color: #003f7f;
-        }
+    .chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background-color: #dcf8c6;
+      display: flex;
+      flex-direction: column;
+    }
 
-        #results {
-            margin-top: 20px;
-            display: none;
-        }
+    .dark-mode .chat-body {
+      background-color: #2a2a2a;
+    }
 
-        canvas {
-            margin-top: 20px;
-        }
+    .message {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      max-width: 70%;
+      word-wrap: break-word;
+      font-size: 14px;
+    }
 
-        .admin-section {
-            display: none;
-            margin-top: 20px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: left;
-        }
+    .message.sent {
+      background-color: #25d366;
+      color: white;
+      align-self: flex-end;
+    }
 
-        .reply-section {
-            display: none;
-            margin-top: 20px;
-        }
-    </style>
+    .dark-mode .message.sent {
+      background-color: #128c7e;
+    }
 
+    .message.received {
+      background-color: #ffffff;
+      color: #000000;
+      align-self: flex-start;
+    }
+
+    .dark-mode .message.received {
+      background-color: #333;
+    }
+
+    .chat-footer {
+      display: flex;
+      padding: 10px;
+      background-color: #ffffff;
+      border-top: 1px solid #ccc;
+    }
+
+    .dark-mode .chat-footer {
+      background-color: #1f1f1f;
+      border-top: 1px solid #444;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .chat-footer button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 50%;
+      background-color: #25d366;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-
-    <div class="container">
-        <h1>Malosha Polling System</h1>
-        <h2>What stage of life are you in?</h2>
-        <div class="vote-option">
-            <input type="radio" id="optionA" name="vote" value="A. Married Woman">
-            <label for="optionA">A. Married Woman (Mke)</label>
-        </div>
-        <div class="vote-option">
-            <input type="radio" id="optionB" name="vote" value="B. Married Man">
-            <label for="optionB">B. Married Man (Mume)</label>
-        </div>
-        <div class="vote-option">
-            <input type="radio" id="optionC" name="vote" value="C. In a Relationship">
-            <label for="optionC">C. In a Relationship (Una Moto)</label>
-        </div>
-        <div class="vote-option">
-            <input type="radio" id="optionD" name="vote" value="D. Single">
-            <label for="optionD">D. Single (Upo Upo Tu)</label>
-        </div>
-        <button onclick="submitVote()">Submit Vote</button>
-
-        <div id="results">
-            <h2>Results</h2>
-            <canvas id="voteChart"></canvas>
-        </div>
+  <div class="chat-container">
+    <div class="chat-header">
+      <span id="userName">Malosha</span>
+      <span class="status">Online</span>
+      <button id="settingsButton" style="background:none; border:none; color:white; font-size:16px; cursor:pointer;">⚙</button>
+      <div class="settings-menu" id="settingsMenu">
+        <ul>
+          <li id="changeName">Change Name</li>
+          <li id="toggleDarkMode">Toggle Dark Mode</li>
+          <li id="clearChat">Clear Chat</li>
+          <li id="changeLanguage">Change Language</li>
+        </ul>
+      </div>
     </div>
 
-    <button class="share-button" onclick="sharePoll()">Share Poll</button>
-    <button class="share-button" onclick="showAdminSection()">Admin Login</button>
-
-    <div class="admin-section" id="adminSection">
-        <h2>Admin Section</h2>
-        <label for="adminPassword">Enter Admin Password:</label>
-        <input type="text" id="adminPassword" placeholder="Enter password" />
-        <button onclick="validateAdmin()">Login</button>
-        <div id="detailedResults" style="display: none;">
-            <h3>Detailed Results:</h3>
-            <p id="resultA"></p>
-            <p id="resultB"></p>
-            <p id="resultC"></p>
-            <p id="resultD"></p>
-        </div>
+    <div class="chat-body" id="chatBody">
+      <div class="message received">Karibu kwenye mazungumzo ya Malosha!</div>
     </div>
 
-    <div id="smsCommentSection">
-        <h2>Leave your comment via SMS:</h2>
-        <textarea id="smsComment" rows="4" placeholder="Enter your comment here..."></textarea>
-        <button class="reply-button" onclick="submitComment()">Submit Comment</button>
+    <div class="chat-footer">
+      <input type="text" id="messageInput" placeholder="Type a message...">
+      <button id="sendButton">></button>
     </div>
+  </div>
+  <script>
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const changeName = document.getElementById('changeName');
+    const toggleDarkMode = document.getElementById('toggleDarkMode');
+    const clearChat = document.getElementById('clearChat');
+    const changeLanguage = document.getElementById('changeLanguage');
+    const chatBody = document.getElementById('chatBody');
+    const userName = document.getElementById('userName');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
 
-    <div id="notification">You have a new comment!</div>
+    let isDarkMode = false;
+    let currentLanguage = 'English';
 
-    <div class="reply-section" id="replySection">
-        <h2>Reply to Comment:</h2>
-        <textarea id="smsReply" class="reply-textarea" rows="4" placeholder="Type your reply here..."></textarea>
-        <button class="reply-button" onclick="submitReply()">Send Reply</button>
-    </div>
+    // Toggle settings menu
+    settingsButton.addEventListener('click', () => {
+      settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+    });
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    // Change name
+    changeName.addEventListener('click', () => {
+      const newName = prompt('Enter your new name:');
+      if (newName) {
+        userName.textContent = newName;
+        alert('Name changed to ' + newName);
+      }
+      settingsMenu.style.display = 'none';
+    });
 
-    <script>
-        let votes = { 'A. Married Woman': 0, 'B. Married Man': 0, 'C. In a Relationship': 0, 'D. Single': 0 };
-        let hasVoted = false;
+    // Toggle dark mode
+    toggleDarkMode.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      isDarkMode = !isDarkMode;
+      alert(`Dark mode ${isDarkMode ? 'enabled' : 'disabled'}`);
+      settingsMenu.style.display = 'none';
+    });
 
-        function submitVote() {
-            if (hasVoted) {
-                alert("You can only vote once.");
-                return;
-            }
+    // Clear chat
+    clearChat.addEventListener('click', () => {
+      chatBody.innerHTML = '';
+      alert('Chat cleared.');
+      settingsMenu.style.display = 'none';
+    });
 
-            const selectedOption = document.querySelector('input[name="vote"]:checked');
-            if (!selectedOption) {
-                alert("Please select an option before voting.");
-                return;
-            }
+    // Change language
+    changeLanguage.addEventListener('click', () => {
+      currentLanguage = currentLanguage === 'English' ? 'Swahili' : 'English';
+      alert(`Language changed to ${currentLanguage}`);
+      settingsMenu.style.display = 'none';
+    });
 
-            const option = selectedOption.value;
-            votes[option]++;
-            hasVoted = true;
+    // Send message
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
 
-            // Update Firebase database with the new vote counts
-            const votesRef = database.ref('votes');
-            votesRef.set(votes);
+    function sendMessage() {
+      const messageText = messageInput.value.trim();
+      if (messageText) {
+        const message = document.createElement('div');
+        message.classList.add('message', 'sent');
+        message.textContent = messageText;
+        chatBody.appendChild(message);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        messageInput.value = '';
 
-            const ctx = document.getElementById('voteChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(votes),
-                    datasets: [{
-                        label: 'Votes',
-                        data: Object.values(votes),
-                        backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
-            document.getElementById('results').style.display = 'block';
-        }
-
-        function sharePoll() {
-            const pollUrl = "https://malosha12.github.io/Malosha-polling-/";
-            navigator.clipboard.writeText(pollUrl).then(() => {
-                alert("Poll link copied to clipboard! Share it with others.");
-            }).catch(() => {
-                alert("Failed to copy link.");
-            });
-        }
-
-        function showAdminSection() {
-            document.getElementById("adminSection").style.display = "block";
-        }
-
-        function validateAdmin() {
-            const password = document.getElementById("adminPassword").value;
-            if (password === "1340") {
-                document.getElementById("detailedResults").style.display = "block";
-                document.getElementById("resultA").textContent = `A. Married Woman: ${votes['A. Married Woman']} votes`;
-                document.getElementById("resultB").textContent = `B. Married Man: ${votes['B. Married Man']} votes`;
-                document.getElementById("resultC").textContent = `C. In a Relationship: ${votes['C. In a Relationship']} votes`;
-                document.getElementById("resultD").textContent = `D. Single: ${votes['D. Single']} votes`;
-            } else {
-                alert("Incorrect password!");
-            }
-        }
-
-        // Functions forcomments and replies
-        function submitComment() {
-            const comment = document.getElementById("smsComment").value;
-            if (comment.trim() === "") {
-                alert("Please enter a comment before submitting.");
-                return;
-            }
-
-            // Save the comment to Firebase
-            const commentsRef = database.ref('comments').push();
-            commentsRef.set({ comment });
-
-            alert("Comment submitted successfully!");
-            document.getElementById("smsComment").value = ""; // Clear the textarea
-        }
-
-        function submitReply() {
-            const reply = document.getElementById("smsReply").value;
-            if (reply.trim() === "") {
-                alert("Please enter a reply before submitting.");
-                return;
-            }
-
-            // Save the reply to Firebase
-            const repliesRef = database.ref('replies').push();
-            repliesRef.set({ reply });
-
-            alert("Reply submitted successfully!");
-            document.getElementById("smsReply").value = ""; // Clear the textarea
-        }
-
-        // Firebase listener for new comments (optional: notify admin or update UI)
-        const commentsRef = database.ref('comments');
-        commentsRef.on('child_added', (snapshot) => {
-            const newComment = snapshot.val();
-            document.getElementById("notification").style.display = "block";
-            document.getElementById("notification").textContent = `New comment: ${newComment.comment}`;
-        });
-
-        // Close notification on click
-        document.getElementById("notification").addEventListener("click", () => {
-            document.getElementById("notification").style.display = "none";
-        });
-    </script>
+        setTimeout(() => {
+          const reply = document.createElement('div');
+          reply.classList.add('message', 'received');
+          reply.textContent =
+            currentLanguage === 'English'
+              ? 'Thank you for your message!'
+              : 'Asante kwa ujumbe wako!';
+          chatBody.appendChild(reply);
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 1000);
+      }
+    }
+  </script>
 </body>
 </html>
