@@ -3,293 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mfumo wa Michango ya Maafa</title>
+    <title>Uuzaji wa Vipande vya Ufuta</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             margin: 20px;
-            background-color: #2C3E50; /* Dark blue */
-            color: #ECF0F1; /* Light gray */
-        }
-
-        h2 {
-            font-size: 50px;
-            animation: colorChange 7s infinite; /* Animation ya kubadilisha rangi kila sekunde 7 */
-        }
-
-        @keyframes colorChange {
-            0% { color: #F1C40F; } /* Yellow */
-            14% { color: #E74C3C; } /* Red */
-            28% { color: #3498DB; } /* Blue */
-            42% { color: #9B59B6; } /* Purple */
-            57% { color: #1ABC9C; } /* Teal */
-            71% { color: #E67E22; } /* Orange */
-            85% { color: #F39C12; } /* Golden */
-        }
-
-        .toggle-btn {
-            background: #E74C3C; /* Red */
-            color: white;
-            padding: 10px 15px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        .toggle-btn:hover {
-            background: #C0392B;
-        }
-
-        .summary {
-            background: #27AE60;
-            padding: 15px;
-            border-radius: 10px;
-            width: 50%;
-            margin: 20px auto;
-            font-size: 20px;
-            color: white;
-            display: none; /* Jumla ya michango inaanza ikiwa imefichwa */
-        }
-
-        .form-container {
-            margin-bottom: 20px;
-            background: #34495E;
-            padding: 15px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-
-        input, button {
-            padding: 10px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        input {
-            background: #ECF0F1;
-            color: #2C3E50;
-        }
-
-        button {
-            background: #27AE60;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #1E8449;
-        }
-
-        table {
-            width: 60%;
-            margin: auto;
-            border-collapse: collapse;
-            background: #ECF0F1;
-            color: #2C3E50;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            border: 1px solid #BDC3C7;
-            padding: 12px;
             text-align: center;
+            background-color: #f4f4f4;
         }
-
-        th {
-            background-color: #27AE60;
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            color: #333;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: green;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkgreen;
+        }
+        .result-container {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            text-align: left;
+        }
+        .result-container div {
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .result-container div span {
+            font-weight: bold;
+        }
+        .result-container div p {
+            margin: 5px 0;
+        }
+        .bulkMoney {
+            background-color: #007BFF; /* Bluu */
             color: white;
         }
-
-        .remaining-names {
-            display: none; /* Hiding the remaining people initially */
+        .bulkPieces {
+            background-color: #28A745; /* Kijani */
+            color: white;
         }
-
-        .footer {
+        .normalMoney {
+            background-color: #FF8C00; /* Machungwa */
+            color: white;
+        }
+        .normalPieces {
+            background-color: #6A5ACD; /* Zambarau */
+            color: white;
+        }
+        .changeMoney {
+            background-color: #B0B0B0; /* Kijivu */
+            color: black;
+        }
+        .customerProfit {
+            background-color: #FFD700; /* Zambarau */
+            color: black;
+        }
+        .history-container {
             margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .history-table th, .history-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .history-table th {
+            background-color: #444;
+            color: white;
+        }
+        .history-table td {
+            background-color: #f9f9f9;
+        }
+        .delete-btn, .edit-btn {
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
             font-size: 14px;
-            color: #BDC3C7;
-            animation: footerAnimation 4s infinite;
         }
-
-        /* Seven different animations for footer text */
-        @keyframes footerAnimation {
-            0% { transform: rotate(0deg); color: #F39C12; }
-            14% { transform: rotate(10deg); color: #E74C3C; }
-            28% { transform: rotate(-10deg); color: #3498DB; }
-            42% { transform: rotate(15deg); color: #9B59B6; }
-            57% { transform: rotate(-15deg); color: #1ABC9C; }
-            71% { transform: rotate(20deg); color: #E67E22; }
-            85% { transform: rotate(-20deg); color: #F1C40F; }
-            100% { transform: rotate(0deg); color: #F39C12; }
+        .delete-btn {
+            background: red;
+            color: white;
         }
-
+        .edit-btn {
+            background: blue;
+            color: white;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <h2>KAMHANGA GROUP MFUMO WA MICHANGO YA MAAFA</h2>
+    <div class="container">
+        <h2>Uuzaji wa Vipande vya Ufuta</h2>
+        
+        <label>Ingiza Kiasi cha Hela Ulichonacho (TZS):</label>
+        <input type="number" id="userMoney" min="100" value="100">
 
-    <button class="toggle-btn" onclick="toggleTotal()">Onyesha salio ⚖️</button>
+        <label>Chagua Aina ya Bei:</label>
+        <select id="priceOption">
+            <option value="100">TZS 100 = Kipande 1</option>
+            <option value="500">TZS 500 = Vipande 6</option>
+            <option value="1000">TZS 1000 = Vipande 13</option>
+            <option value="2000">TZS 2000 = Vipande 27</option>
+        </select>
 
-    <div class="summary" id="totalBox">
-        Jumla ya Michango: <span id="total">0</span> Tsh
-    </div>
+        <button onclick="calculatePurchase()">Hesabu</button>
 
-    <div class="form-container">
-        <input type="text" id="name" placeholder="Ingiza jina">
-        <input type="number" id="amount" placeholder="Kiasi (Tsh)">
-        <button onclick="addContribution()">Ongeza Mchango</button>
-    </div>
+        <div class="result-container" id="resultContainer" style="display: none;">
+            <div class="bulkPieces">
+                <span>Jumla ya Vipande kwa Bei ya Jumla:</span>
+                <p id="bulkPieces"></p>
+            </div>
+            <div class="normalPieces">
+                <span>Jumla ya Vipande kwa Bei ya Kawaida:</span>
+                <p id="normalPieces"></p>
+            </div>
+            <div class="changeMoney">
+                <span>Baki ya Pesa:</span>
+                <p id="changeMoney"></p>
+            </div>
+            <div class="bulkMoney">
+                <span>Jumla ya Pesa kwa Bei ya Jumla:</span>
+                <p id="bulkMoney"></p>
+            </div>
+            <div class="normalMoney">
+                <span>Jumla ya Pesa kwa Bei ya Kawaida:</span>
+                <p id="normalMoney"></p>
+            </div>
+            <div class="customerProfit">
+                <span>Faida ya Mteja kwa Kipande:</span>
+                <p id="customerProfit"></p>
+            </div>
+        </div>
 
-    <h3>Waliotoa Michango</h3>
-    <table id="contributions">
-        <tr>
-            <th>No.</th>
-            <th>Jina</th>
-            <th>Kiasi (Tsh)</th>
-            <th>Hariri</th>
-        </tr>
-    </table>
+        <button onclick="toggleHistory()">Tazama Historia</button>
 
-    <h3>
-        Waliobaki
-        <button class="toggle-btn" onclick="toggleRemainingNames()">ONA MAJINA YOTE</button>
-    </h3>
-    <table id="remaining" class="remaining-names">
-        <tr>
-            <th>No.</th>
-            <th>Jina</th>
-        </tr>
-    </table>
-
-    <div class="footer">
-        <p>This program powered by Malosha</p>
+        <div class="history-container" id="historyContainer">
+            <h3>Historia ya Manunuzi</h3>
+            <table class="history-table" id="historyTable">
+                <tr>
+                    <th>Pesa</th>
+                    <th>Vipande</th>
+                    <th>Faida</th>
+                    <th>Hatua</th>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <script>
-        const allPeople = ["FARAJA HERMAN", "KAMAMBI MASUMBUKO", "LAMECK MOSHI", "DAVID MALOSHA", "SIMON SHIJA", "VICTORIA ELIAS", "EVALINE MPUNGU","DENIS JOHN","FABIAN LUHANYA","PETRO SYLVESTER","PAUL YOHANA","EDWARD MAPINDUZI","PETRO PHILIMON","RAHEL VALENCE","COSMAS MALIMI","MASABA YONA","RAPHAEL DIONIZ","THOMBIAS LUKAS","RENATUS MAYANGA"];
-        let contributions = JSON.parse(localStorage.getItem("contributions")) || [];
-        let totalAmount = JSON.parse(localStorage.getItem("totalAmount")) || 0;
+        function calculatePurchase() {
+            let money = parseInt(document.getElementById("userMoney").value);
+            let priceOption = parseInt(document.getElementById("priceOption").value);
+            let piecesPerUnit = { 100: 1, 500: 6, 1000: 13, 2000: 27 };
 
-        window.onload = updateUI; // Onload update UI
-
-        function addContribution() {
-            let nameInput = document.getElementById("name");
-            let amountInput = document.getElementById("amount");
-
-            let name = nameInput.value.trim().toUpperCase(); // Badili jina kuwa herufi kubwa
-            let amount = parseInt(amountInput.value);
-
-            if (name === "" || isNaN(amount) || amount <= 0) {
-                alert("Tafadhali ingiza jina na kiasi sahihi.");
+            if (money < priceOption) {
+                alert("Hela haitoshi kwa chaguo hili, tafadhali chagua bei ndogo.");
                 return;
             }
 
-            contributions.push({ name, amount });
-            totalAmount += amount;
+            let bulkPieces = Math.floor(money / priceOption) * piecesPerUnit[priceOption];
+            let bulkMoney = Math.floor(money / priceOption) * priceOption;
+            let normalPieces = Math.floor(money / 100);
+            let normalMoney = normalPieces * 100;
+            let remainingMoney = money - bulkMoney;
 
-            // Ondoa jina kutoka kwenye orodha ya waliobaki
-            allPeople.splice(allPeople.indexOf(name), 1); // Ondoa jina kutoka allPeople
+            // Customer's profit calculation (profit per piece sold for 100 TZS)
+            let profitPerPiece = 100 - (priceOption / piecesPerUnit[priceOption]);
+            let customerProfit = profitPerPiece * bulkPieces;
 
-            // Save to localStorage
-            localStorage.setItem("contributions", JSON.stringify(contributions));
-            localStorage.setItem("totalAmount", JSON.stringify(totalAmount));
+            document.getElementById("bulkPieces").innerText = bulkPieces + " Vipande";
+            document.getElementById("normalPieces").innerText = normalPieces + " Vipande";
+            document.getElementById("changeMoney").innerText = remainingMoney + " TZS";
+            document.getElementById("bulkMoney").innerText = bulkMoney + " TZS";
+            document.getElementById("normalMoney").innerText = normalMoney + " TZS";
+            document.getElementById("customerProfit").innerText = customerProfit + " TZS";
 
-            nameInput.value = "";
-            amountInput.value = "";
-            nameInput.focus();
+            document.getElementById("resultContainer").style.display = "grid";
 
-            updateUI();
+            // Save the result to history
+            saveToHistory(money, bulkPieces, bulkMoney, normalPieces, normalMoney, customerProfit);
         }
 
-        function updateUI() {
-            let contributionsTable = document.getElementById("contributions");
-            contributionsTable.innerHTML = `
+        function saveToHistory(money, bulkPieces, bulkMoney, normalPieces, normalMoney, customerProfit) {
+            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+            history.push({ money, bulkPieces, bulkMoney, normalPieces, normalMoney, customerProfit });
+            localStorage.setItem("purchaseHistory", JSON.stringify(history));
+            displayHistory();
+        }
+
+        function displayHistory() {
+            let historyTable = document.getElementById("historyTable");
+            historyTable.innerHTML = `
                 <tr>
-                    <th>No.</th>
-                    <th>Jina</th>
-                    <th>Kiasi (Tsh)</th>
-                    <th>Hariri</th>
-                </tr>
-            `;
+                    <th>Pesa</th>
+                    <th>Vipande</th>
+                    <th>Faida</th>
+                    <th>Hatua</th>
+                </tr>`;
 
-            contributions.forEach((contributor, index) => {
-                let row = contributionsTable.insertRow();
-                row.insertCell(0).textContent = index + 1;
-                row.insertCell(1).textContent = contributor.name;
-                row.insertCell(2).textContent = contributor.amount.toLocaleString() + " Tsh";
-                let editCell = row.insertCell(3);
-                let editButton = document.createElement("button");
-                editButton.textContent = "Hariri";
-                editButton.onclick = function() {
-                    editContribution(index);
-                };
-                editCell.appendChild(editButton);
-            });
-
-            document.getElementById("total").textContent = totalAmount.toLocaleString();
-
-            let remainingTable = document.getElementById("remaining");
-            remainingTable.innerHTML = `
-                <tr>
-                    <th>No.</th>
-                    <th>Jina</th>
-                </tr>
-            `;
-
-            let remainingPeople = allPeople; // Hapa tunachukua waliobaki
-            remainingPeople.forEach((person, index) => {
-                let row = remainingTable.insertRow();
-                row.insertCell(0).textContent = index + 1; // Namba ya mfuatano
-                row.insertCell(1).textContent = person;
+            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+            history.forEach((item, index) => {
+                let row = historyTable.insertRow();
+                row.innerHTML = `
+                    <td>${item.money} TZS</td>
+                    <td>${item.bulkPieces} Vipande</td>
+                    <td>${item.customerProfit} TZS</td>
+                    <td>
+                        <div class="btn-container">
+                            <button class="edit-btn" onclick="editHistory(${index})">Hariri</button>
+                            <button class="delete-btn" onclick="deleteHistory(${index})">Futa</button>
+                        </div>
+                    </td>`;
             });
         }
 
-        function editContribution(index) {
-            let contributor = contributions[index];
-            let nameInput = document.getElementById("name");
-            let amountInput = document.getElementById("amount");
-
-            // Iwapo jina linahitaji kubadilishwa
-            nameInput.value = contributor.name;
-            amountInput.value = contributor.amount;
-
-            // Ondoa mchango huo na update UI
-            contributions.splice(index, 1);
-            totalAmount -= contributor.amount;
-
-            // Save to localStorage
-            localStorage.setItem("contributions", JSON.stringify(contributions));
-            localStorage.setItem("totalAmount", JSON.stringify(totalAmount));
-
-            updateUI();
+        function toggleHistory() {
+            let historyContainer = document.getElementById("historyContainer");
+            historyContainer.style.display = historyContainer.style.display === "none" ? "block" : "none";
         }
 
-        function toggleTotal() {
-            let totalBox = document.getElementById("totalBox");
-            if (totalBox.style.display === "none") {
-                totalBox.style.display = "block";
-            } else {
-                totalBox.style.display = "none";
-            }
+        function deleteHistory(index) {
+            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+            history.splice(index, 1);
+            localStorage.setItem("purchaseHistory", JSON.stringify(history));
+            displayHistory();
         }
 
-        function toggleRemainingNames() {
-            let remainingNamesTable = document.getElementById("remaining");
-            // Angalia kama table ya majina ya waliobaki inafichwa au inaonyeshwa
-            if (remainingNamesTable.style.display === "none" || remainingNamesTable.style.display === "") {
-                remainingNamesTable.style.display = "block";
-            } else {
-                remainingNamesTable.style.display = "none";
-            }
+        function editHistory(index) {
+            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+            let item = history[index];
+
+            document.getElementById("userMoney").value = item.money;
+            document.getElementById("priceOption").value = item.money < 500 ? 100 : item.money < 1000 ? 500 : item.money < 2000 ? 1000 : 2000;
+
+            deleteHistory(index);
         }
+
+        displayHistory();
     </script>
-
 </body>
 </html>
