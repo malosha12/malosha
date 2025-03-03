@@ -3,275 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uuzaji wa Vipande vya Ufuta</title>
+    <title>Usajili wa Wanachama - Malosha Tech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase Modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB8hTb3m6qN_4nzqVDEgSi6j9agGqKcOVk",
+            authDomain: "maoni-yetu.firebaseapp.com",
+            databaseURL: "https://maoni-yetu-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "maoni-yetu",
+            storageBucket: "maoni-yetu.appspot.com",
+            messagingSenderId: "482564916985",
+            appId: "1:482564916985:web:49e8865a924f3a31674428",
+            measurementId: "G-26N7HH1YFZ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Usajili wa wanachama
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('registrationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const fullName = document.getElementById('fullName').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const skills = document.getElementById('skills').value;
+
+                if (fullName === "" || email === "" || phone === "" || skills === "") {
+                    alert("Tafadhali jaza sehemu zote!");
+                    return;
+                }
+
+                const memberData = {
+                    fullName,
+                    email,
+                    phone,
+                    skills,
+                    registrationDate: new Date().toISOString()
+                };
+
+                const membersRef = ref(database, 'wanachama');
+                push(membersRef, memberData)
+                    .then(() => {
+                        document.getElementById('message').textContent = 'Usajili umekamilika!';
+                        document.getElementById('message').style.color = 'green';
+                        document.getElementById('registrationForm').reset();
+
+                        setTimeout(() => {
+                            document.getElementById('message').textContent = '';
+                        }, 3000);
+                    })
+                    .catch(error => {
+                        console.error("Hitilafu: ", error);
+                        document.getElementById('message').textContent = 'Hitilafu imejitokeza!';
+                        document.getElementById('message').style.color = 'red';
+                    });
+            });
+
+            // Kuonyesha wanachama
+            document.getElementById('showMembersBtn').addEventListener('click', function() {
+                document.getElementById('membersListContainer').style.display = 'block';
+
+                const membersRef = ref(database, 'wanachama');
+                onValue(membersRef, (snapshot) => {
+                    let membersList = document.getElementById('membersList');
+                    membersList.innerHTML = '';
+
+                    if (!snapshot.exists()) {
+                        membersList.innerHTML = '<li>Hakuna wanachama waliosajiliwa.</li>';
+                        return;
+                    }
+
+                    snapshot.forEach(childSnapshot => {
+                        let member = childSnapshot.val();
+                        membersList.innerHTML += `
+                            <li>
+                                <strong>${member.fullName}</strong> 
+                                <br>📧 ${member.email}
+                                <br>📞 ${member.phone}
+                                <br>🎓 Ujuzi: ${member.skills}
+                            </li>`;
+                    });
+                }, {
+                    onlyOnce: true
+                });
+            });
+        });
+    </script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background: white;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1, #96c93d, #f94144);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
         }
-        h2 {
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
             color: #333;
         }
-        input, select, button {
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        button {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #membersListContainer {
+            display: none;
+        }
+
+        #membersList {
+            list-style: none;
+            padding: 0;
+        }
+
+        #membersList li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            background: #f9f9f9;
+            margin-bottom: 5px;
             border-radius: 5px;
         }
-        button {
-            background: green;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
+
+        #showMembersBtn {
+            background-color: #2196F3;
         }
-        button:hover {
-            background: darkgreen;
-        }
-        .result-container {
-            margin-top: 30px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            text-align: left;
-        }
-        .result-container div {
-            padding: 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .result-container div span {
-            font-weight: bold;
-        }
-        .result-container div p {
-            margin: 5px 0;
-        }
-        .bulkMoney {
-            background-color: #007BFF; /* Bluu */
-            color: white;
-        }
-        .bulkPieces {
-            background-color: #28A745; /* Kijani */
-            color: white;
-        }
-        .normalMoney {
-            background-color: #FF8C00; /* Machungwa */
-            color: white;
-        }
-        .normalPieces {
-            background-color: #6A5ACD; /* Zambarau */
-            color: white;
-        }
-        .changeMoney {
-            background-color: #B0B0B0; /* Kijivu */
-            color: black;
-        }
-        .customerProfit {
-            background-color: #FFD700; /* Zambarau */
-            color: black;
-        }
-        .history-container {
-            margin-top: 30px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .history-table th, .history-table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-        .history-table th {
-            background-color: #444;
-            color: white;
-        }
-        .history-table td {
-            background-color: #f9f9f9;
-        }
-        .delete-btn, .edit-btn {
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .delete-btn {
-            background: red;
-            color: white;
-        }
-        .edit-btn {
-            background: blue;
-            color: white;
-        }
-        .btn-container {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 10px;
+
+        #showMembersBtn:hover {
+            background-color: #1976D2;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h2>Uuzaji wa Vipande vya Ufuta</h2>
-        
-        <label>Ingiza Kiasi cha Hela Ulichonacho (TZS):</label>
-        <input type="number" id="userMoney" min="100" value="100">
-
-        <label>Chagua Aina ya Bei:</label>
-        <select id="priceOption">
-            <option value="100">TZS 100 = Kipande 1</option>
-            <option value="500">TZS 500 = Vipande 6</option>
-            <option value="1000">TZS 1000 = Vipande 13</option>
-            <option value="2000">TZS 2000 = Vipande 27</option>
-        </select>
-
-        <button onclick="calculatePurchase()">Hesabu</button>
-
-        <div class="result-container" id="resultContainer" style="display: none;">
-            <div class="bulkPieces">
-                <span>Jumla ya Vipande kwa Bei ya Jumla:</span>
-                <p id="bulkPieces"></p>
+    <div class="form-container">
+        <h1>MALOSHA ACADEMY REGISTRATION </h1>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="fullName">Jina Kamili:</label>
+                <input type="text" id="fullName" required>
             </div>
-            <div class="normalPieces">
-                <span>Jumla ya Vipande kwa Bei ya Kawaida:</span>
-                <p id="normalPieces"></p>
+            <div class="form-group">
+                <label for="email">Barua Pepe:</label>
+                <input type="email" id="email" required>
             </div>
-            <div class="changeMoney">
-                <span>Baki ya Pesa:</span>
-                <p id="changeMoney"></p>
+            <div class="form-group">
+                <label for="phone">Namba ya Simu:</label>
+                <input type="tel" id="phone" required>
             </div>
-            <div class="bulkMoney">
-                <span>Jumla ya Pesa kwa Bei ya Jumla:</span>
-                <p id="bulkMoney"></p>
+            <div class="form-group">
+                <label for="skills">Ujuzi:</label>
+                <input type="text" id="skills" required>
             </div>
-            <div class="normalMoney">
-                <span>Jumla ya Pesa kwa Bei ya Kawaida:</span>
-                <p id="normalMoney"></p>
-            </div>
-            <div class="customerProfit">
-                <span>Faida ya Mteja kwa Kipande:</span>
-                <p id="customerProfit"></p>
-            </div>
-        </div>
-
-        <button onclick="toggleHistory()">Tazama Historia</button>
-
-        <div class="history-container" id="historyContainer">
-            <h3>Historia ya Manunuzi</h3>
-            <table class="history-table" id="historyTable">
-                <tr>
-                    <th>Pesa</th>
-                    <th>Vipande</th>
-                    <th>Faida</th>
-                    <th>Hatua</th>
-                </tr>
-            </table>
-        </div>
+            <button type="submit">Jisajili</button>
+        </form>
+        <div id="message"></div>
     </div>
 
-    <script>
-        function calculatePurchase() {
-            let money = parseInt(document.getElementById("userMoney").value);
-            let priceOption = parseInt(document.getElementById("priceOption").value);
-            let piecesPerUnit = { 100: 1, 500: 6, 1000: 13, 2000: 27 };
-
-            if (money < priceOption) {
-                alert("Hela haitoshi kwa chaguo hili, tafadhali chagua bei ndogo.");
-                return;
-            }
-
-            let bulkPieces = Math.floor(money / priceOption) * piecesPerUnit[priceOption];
-            let bulkMoney = Math.floor(money / priceOption) * priceOption;
-            let normalPieces = Math.floor(money / 100);
-            let normalMoney = normalPieces * 100;
-            let remainingMoney = money - bulkMoney;
-
-            // Customer's profit calculation (profit per piece sold for 100 TZS)
-            let profitPerPiece = 100 - (priceOption / piecesPerUnit[priceOption]);
-            let customerProfit = profitPerPiece * bulkPieces;
-
-            document.getElementById("bulkPieces").innerText = bulkPieces + " Vipande";
-            document.getElementById("normalPieces").innerText = normalPieces + " Vipande";
-            document.getElementById("changeMoney").innerText = remainingMoney + " TZS";
-            document.getElementById("bulkMoney").innerText = bulkMoney + " TZS";
-            document.getElementById("normalMoney").innerText = normalMoney + " TZS";
-            document.getElementById("customerProfit").innerText = customerProfit + " TZS";
-
-            document.getElementById("resultContainer").style.display = "grid";
-
-            // Save the result to history
-            saveToHistory(money, bulkPieces, bulkMoney, normalPieces, normalMoney, customerProfit);
-        }
-
-        function saveToHistory(money, bulkPieces, bulkMoney, normalPieces, normalMoney, customerProfit) {
-            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
-            history.push({ money, bulkPieces, bulkMoney, normalPieces, normalMoney, customerProfit });
-            localStorage.setItem("purchaseHistory", JSON.stringify(history));
-            displayHistory();
-        }
-
-        function displayHistory() {
-            let historyTable = document.getElementById("historyTable");
-            historyTable.innerHTML = `
-                <tr>
-                    <th>Pesa</th>
-                    <th>Vipande</th>
-                    <th>Faida</th>
-                    <th>Hatua</th>
-                </tr>`;
-
-            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
-            history.forEach((item, index) => {
-                let row = historyTable.insertRow();
-                row.innerHTML = `
-                    <td>${item.money} TZS</td>
-                    <td>${item.bulkPieces} Vipande</td>
-                    <td>${item.customerProfit} TZS</td>
-                    <td>
-                        <div class="btn-container">
-                            <button class="edit-btn" onclick="editHistory(${index})">Hariri</button>
-                            <button class="delete-btn" onclick="deleteHistory(${index})">Futa</button>
-                        </div>
-                    </td>`;
-            });
-        }
-
-        function toggleHistory() {
-            let historyContainer = document.getElementById("historyContainer");
-            historyContainer.style.display = historyContainer.style.display === "none" ? "block" : "none";
-        }
-
-        function deleteHistory(index) {
-            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
-            history.splice(index, 1);
-            localStorage.setItem("purchaseHistory", JSON.stringify(history));
-            displayHistory();
-        }
-
-        function editHistory(index) {
-            let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
-            let item = history[index];
-
-            document.getElementById("userMoney").value = item.money;
-            document.getElementById("priceOption").value = item.money < 500 ? 100 : item.money < 1000 ? 500 : item.money < 2000 ? 1000 : 2000;
-
-            deleteHistory(index);
-        }
-
-        displayHistory();
-    </script>
+    <div class="form-container">
+        <button id="showMembersBtn">Ona Wanachama</button>
+        <div id="membersListContainer">
+            <h2>Wanachama Waliojisajili</h2>
+            <ul id="membersList"></ul>
+        </div>
+    </div>
 </body>
 </html>
